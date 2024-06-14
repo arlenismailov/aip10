@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Search</title>
+</head>
+<body>
+    <h1>API Search</h1>
+    <form method="get" action="{% url 'search' %}">
+        <input type="text" name="q" placeholder="Поиск по (имя, фамилия, id)">
+        <button type="submit">Поиск</button>
+    </form>
+</body>
+</html>
