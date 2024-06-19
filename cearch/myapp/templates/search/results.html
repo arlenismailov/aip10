@@ -5,23 +5,22 @@
 </head>
 <body>
     <h1>Search Results for "{{ search_term }}"</h1>
-    <a href="{% url 'index' %}">Назад к поиску</a>
-    <div>
+    {% if results %}
         {% for key, items in results.items %}
+            <h2>{{ key }}</h2>
             {% if items %}
-                <h2>Results from {{ key }}</h2>
-                <pre>
-                    {{ items|json_script:"json_results" }}
-                </pre>
                 <ul>
                     {% for item in items %}
                         <li>{{ item }}</li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>No results from {{ key }}</p>
+                <p>No results found for this category.</p>
             {% endif %}
         {% endfor %}
-    </div>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+    <p><a href="{{ swagger_url }}">View API Documentation</a></p>
 </body>
 </html>

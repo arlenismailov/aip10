@@ -3,13 +3,6 @@ import httpx
 import json
 import asyncio
 
-
-async def fetch_api_data(url):
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url)
-        return response.json()
-
-
 api_urls = [
     "https://jsonplaceholder.typicode.com/users",
     "https://jsonplaceholder.typicode.com/posts",
@@ -21,8 +14,13 @@ api_urls = [
     "https://jsonplaceholder.typicode.com/albums/1/photos",
     "https://jsonplaceholder.typicode.com/users/1/posts",
     "https://jsonplaceholder.typicode.com/users/1/todos"
-
 ]
+
+
+async def fetch_api_data(url):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+        return response.json()
 
 
 async def fetch_all_data(urls):
@@ -38,31 +36,29 @@ async def fetch_all_data(urls):
 async def search_data(data, search_term):
     results = {key: [] for key in data}
     search_term = search_term.lower()
-    # is_personal_number = len(search_term) == 14 and search_term.isdigit()
 
     for key, items in data.items():
         for item in items:
             if isinstance(item, dict):
-                # Поиск по id или фамилии (name)
                 if 'name' in item and search_term in item['name'].lower():
                     results[key].append(item)
-                # elif is_personal_number and str(item.get('id', '')).lower() == search_term:
+                elif 'username' in item and search_term in item['username'].lower():
+                    results[key].append(item)
                 elif str(item.get('id', '')).lower() == search_term:
                     results[key].append(item)
     return results
 
 
 async def index(request):
-    return render(request, 'search/index.html')
+    return render(request, 'search/index.html', {'swagger_url': '/swagger/'})
 
 
-# Асинхронное представление для выполнения поиска
 async def search(request):
     search_term = request.GET.get('q', '')
 
-    # Получаем данные из всех API асинхронно
     data = await fetch_all_data(api_urls)
     results = await search_data(data, search_term)
+
     print("Search term:", search_term)
     print("Search results:")
     print(json.dumps(results, indent=4))

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>API Search</title>
+    <title>Search API Data</title>
 </head>
 <body>
-    <h1>API Search</h1>
-    <form method="get" action="{% url 'search' %}">
-        <input type="text" name="q" placeholder="Поиск по (имя, фамилия, id)">
-        <button type="submit">Поиск</button>
+    <h1>Search API Data</h1>
+    <form action="{% url 'search' %}" method="get">
+        <input type="text" name="q" placeholder="ПОИСК ID ...">
+        <button type="submit">Search</button>
     </form>
+    <p><a href="{{ swagger_url }}">View API Documentation</a></p>
+    <a href="{% url 'schema-swagger-ui' %}">Swagger Documentation</a>
 </body>
-</html>
