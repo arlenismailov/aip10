@@ -1,7 +1,13 @@
 from django.shortcuts import render
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
 import httpx
 import json
 import asyncio
+from asgiref.sync import sync_to_async
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 api_urls = [
     "https://jsonplaceholder.typicode.com/users",
@@ -49,18 +55,21 @@ async def search_data(data, search_term):
     return results
 
 
-async def index(request):
-    return render(request, 'search/index.html', {'swagger_url': '/swagger/'})
-
-
-async def search(request):
+@swagger_auto_schema(method='get', manual_parameters=[
+    openapi.Parameter('q', openapi.IN_QUERY, description="Search term", type=openapi.TYPE_STRING)
+])
+@api_view(['GET'])
+def search(request):
     search_term = request.GET.get('q', '')
-
-    data = await fetch_all_data(api_urls)
-    results = await search_data(data, search_term)
+    data = asyncio.run(fetch_all_data(api_urls))
+    results = asyncio.run(search_data(data, search_term))
 
     print("Search term:", search_term)
     print("Search results:")
     print(json.dumps(results, indent=4))
 
-    return render(request, 'search/results.html', {'results': results, 'search_term': search_term})
+    return Response({'results': results, 'search_term': search_term}, status=status.HTTP_200_OK)
+
+
+def index(request):
+    return render(request, 'search/index.html', {'swagger_url': '/swagger/'})
