@@ -1,14 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Search API Data</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search API</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>Search API Data</h1>
-    <form action="{% url 'search' %}" method="get">
-        <input type="text" name="q" placeholder="ПОИСК ID ...">
-        <button type="submit">Search</button>
-    </form>
-    <p><a href="{{ swagger_url }}">View API Documentation</a></p>
-    <a href="{% url 'schema-swagger-ui' %}">Swagger Documentation</a>
+    <div class="container mt-5">
+        <h1 class="mb-4">Search API</h1>
+
+        <div class="mb-4">
+            <a href="{{ swagger_url }}" class="btn btn-primary">View Swagger Documentation</a>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Search by ID</h2>
+            </div>
+            <div class="card-body">
+                <form id="search-id-form">
+                    <div class="form-group">
+                        <label for="search-id">Search Term (ID):</label>
+                        <input type="text" class="form-control" id="search-id" name="q">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+                <div id="search-id-results" class="mt-4"></div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Search by Name</h2>
+            </div>
+            <div class="card-body">
+                <form id="search-name-form">
+                    <div class="form-group">
+                        <label for="search-name">Search Term (Name):</label>
+                        <input type="text" class="form-control" id="search-name" name="q">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+                <div id="search-name-results" class="mt-4"></div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Search by Username</h2>
+            </div>
+            <div class="card-body">
+                <form id="search-username-form">
+                    <div class="form-group">
+                        <label for="search-username">Search Term (Username):</label>
+                        <input type="text" class="form-control" id="search-username" name="q">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+                <div id="search-username-results" class="mt-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchSearchResults(url, query, resultElementId) {
+            const response = await fetch(`${url}?q=${query}`);
+            const data = await response.json();
+            document.getElementById(resultElementId).innerHTML = `<pre>${JSON.stringify(data, null, 4)}</pre>`;
+        }
+
+        document.getElementById('search-id-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = document.getElementById('search-id').value;
+            fetchSearchResults('/search/id/', query, 'search-id-results');
+        });
+
+        document.getElementById('search-name-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = document.getElementById('search-name').value;
+            fetchSearchResults('/search/name/', query, 'search-name-results');
+        });
+
+        document.getElementById('search-username-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = document.getElementById('search-username').value;
+            fetchSearchResults('/search/username/', query, 'search-username-results');
+        });
+    </script>
 </body>
+</html>

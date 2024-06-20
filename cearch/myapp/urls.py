@@ -21,5 +21,8 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('', views.index, name='index'),
-    path('search/', views.search, name='search'),
+    path('search/id/', views.search_id, name='search_id'),
+    path('search/name/', views.search_name, name='search_name'),
+    path('search/username/', views.search_username, name='search_username'),
 ]
+
